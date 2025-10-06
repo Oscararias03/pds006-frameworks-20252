@@ -1,19 +1,72 @@
+import prisma from "@/infra/prismaClient"; 
 import { Computer, FrequentComputer, MedicalDevice } from "@/core/domain";
 import { DeviceRepository } from "@/core/repository";
 import { InMemoryDeviceRepository } from ".";
 
-import { beforeEach, describe, expect, it } from "bun:test";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "bun:test";
+import { PostgresDeviceRepository } from "../postgres/postgres-device.repository";
 
 describe("DeviceRepository contract tests", () => {
+  
   let repo: DeviceRepository;
 
-  beforeEach(() => {
-    /*
-      Cambia al constructor de tu implementación
-      Ej: new PostgresDeviceRepository()
-    */
-    repo = new InMemoryDeviceRepository();
+  beforeAll(async () => {
+  await prisma.$connect();
+});
+
+afterAll(async () => {
+  await prisma.$disconnect();
+});
+
+beforeEach(async () => {
+  // Limpiamos tablas dependientes primero
+  await prisma.frequentComputer.deleteMany();
+  await prisma.computer.deleteMany();
+  await prisma.medicalDevice.deleteMany();
+  await prisma.owner.deleteMany();
+
+  // Creamos un Owner
+  const owner = await prisma.owner.create({
+    data: {
+      name: "John Doe",
+    },
   });
+
+  // Creamos un Computer
+  const computer = await prisma.computer.create({
+    data: {
+      brand: "Dell",
+      model: "XPS 13",
+      color: "Silver",
+      photoURL: "http://localhost/fake-photo.jpg",
+      ownerId: owner.id,
+    },
+  });
+
+  // Creamos un MedicalDevice (ojo con el campo serial obligatorio)
+  await prisma.medicalDevice.create({
+    data: {
+      brand: "Philips",
+      model: "MRI Scanner",
+      photoURL: "http://localhost/fake-photo.jpg",
+      ownerId: owner.id,
+      serial: "MD-12345",
+    },
+  });
+
+  // Creamos un FrequentComputer
+  await prisma.frequentComputer.create({
+    data: {
+      computerId: computer.id,
+      checkinURL: "http://localhost/checkin",
+      checkoutURL: "http://localhost/checkout",
+    },
+  });
+
+  // Inicializa el repo que vas a probar
+  repo = new PostgresDeviceRepository(prisma);
+});
+
 
   it("registerFrequentComputer should persist and return a frequent computer", async () => {
     const computer: Computer = {

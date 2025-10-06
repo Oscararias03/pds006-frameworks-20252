@@ -27,3 +27,29 @@ bun run dev
 ```
 
 Open http://localhost:3000/ with your browser to see the result.
+
+▶️ Comandos útiles
+
+Iniciar el servidor de BD (Linux):
+
+sudo service postgresql start
+
+
+Detener el servidor de BD:
+
+sudo service postgresql stop
+
+
+Ejecutar migraciones en desarrollo:
+
+npx prisma migrate dev
+
+
+Generar cliente de Prisma:
+
+npx prisma generate
+
+
+Verificar conexión a la BD:
+
+psql -h localhost -U myuser -d devicesdb
