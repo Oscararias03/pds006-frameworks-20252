@@ -1,5 +1,7 @@
 # Practicas/Metricas aplicadas a lo largo del proyecto
 
+# Oscar Esteban Arias y Cesar Ivan Moreno 
+
 - Arquitectura hexagonal
 
 - Nombramiento de archivos con `kebab-case` y extensión descriptiva (ej. `usuario.entidad.ts` o `postgres.repository.ts`)
