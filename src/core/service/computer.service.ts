@@ -39,7 +39,7 @@ export class ComputerService {
 
     computer.checkinAt = new Date()
 
-    this.repository.checkinComputer(computer)
+    await this.repository.checkinComputer(computer)
 
     return computer
   }

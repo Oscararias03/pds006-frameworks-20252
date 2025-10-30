@@ -2,7 +2,7 @@
   "name": "pds006sanrafael",
   "version": "1.0.50",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "dev": "bun run --watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
     "prisma:migrate": "prisma migrate dev",
